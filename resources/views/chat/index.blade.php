@@ -1,21 +1,41 @@
-<x-app-layout>
+<!DOCTYPE html>
+<html>
+<head>
 
-    <div class="p-6">
+    <title>Chat</title>
 
-        <h1 class="text-2xl font-bold mb-4">
-            Realtime Chat
-        </h1>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        @foreach($users as $user)
+</head>
 
-            <div class="border p-3 rounded mb-2">
+<body class="bg-gray-100">
 
-                {{ $user->name }}
+    <div class="max-w-3xl mx-auto mt-10">
 
-            </div>
+        <div class="bg-white p-5 rounded shadow">
 
-        @endforeach
+            <h1 class="text-2xl font-bold mb-5">
+                Daftar User
+            </h1>
+
+            @foreach($users as $user)
+
+                <div class="border p-3 rounded mb-3">
+
+                    <a
+                        href="/chat/{{ $user->id }}"
+                        class="text-blue-500"
+                    >
+                        {{ $user->name }}
+                    </a>
+
+                </div>
+
+            @endforeach
+
+        </div>
 
     </div>
 
-</x-app-layout>
+</body>
+</html>
