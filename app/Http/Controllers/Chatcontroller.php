@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
-use Illuminate\Http\Request;
+use App\Events\MessageSent;
 
 class ChatController extends Controller
 {
-    
     public function index()
     {
         $users = User::where('id', '!=', auth()->id())->get();
@@ -16,46 +17,48 @@ class ChatController extends Controller
         return view('chat.index', compact('users'));
     }
 
-    
-    
-       public function show($id)
-{
-    $user = User::findOrFail($id);
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
 
-    $allUsers = User::where('id', '!=', auth()->id())->get();
+        $allUsers = User::where('id', '!=', auth()->id())->get();
 
-    $messages = Message::where(function($query) use ($id) {
+        $messages = Message::where(function ($query) use ($id) {
 
-        $query->where('sender_id', auth()->id())
-              ->where('receiver_id', $id);
+            $query->where('sender_id', auth()->id())
+                  ->where('receiver_id', $id);
 
-    })->orWhere(function($query) use ($id) {
+        })->orWhere(function ($query) use ($id) {
 
-        $query->where('sender_id', $id)
-              ->where('receiver_id', auth()->id());
+            $query->where('sender_id', $id)
+                  ->where('receiver_id', auth()->id());
 
-    })->orderBy('created_at', 'asc')->get();
+        })->orderBy('created_at', 'asc')->get();
 
-    return view('chat.show', compact(
-        'user',
-        'messages',
-        'allUsers'
-    ));
-}
+        return view('chat.show', compact(
+            'user',
+            'messages',
+            'allUsers'
+        ));
+    }
 
-    // kirim pesan
     public function sendMessage(Request $request, $id)
     {
         $request->validate([
-            'message' => 'required'
-        ]);
+        'message' => 'required'
+    ]);
 
-        Message::create([
+        $message = Message::create([
             'sender_id' => auth()->id(),
             'receiver_id' => $id,
             'message' => $request->message,
         ]);
 
-        return back();
+
+        broadcast(new MessageSent($message));
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

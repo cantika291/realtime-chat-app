@@ -1,7 +1,4 @@
-import './bootstrap';
+import "./bootstrap";
 
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+console.log("APP JS MASUK");
+console.log(window.Echo);
