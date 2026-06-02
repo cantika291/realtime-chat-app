@@ -26,6 +26,10 @@
                         href="/chat/{{ $user->id }}"
                         class="text-blue-500"
                     >
+                        <span id="status-{{ $user->id }}">
+                            🔴
+                        </span>
+
                         {{ $user->name }}
                     </a>
 
@@ -36,6 +40,8 @@
         </div>
 
     </div>
+
+@vite(['resources/js/app.js'])
 
 </body>
 </html>
